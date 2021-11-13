@@ -23,18 +23,21 @@ class MarvelService {
     }
     _transformCharacter = (char) => {
         if (!char.description){
-            char.description = "Sorry, there is no description"
+            char.description = "Sorry, there is no description."
         }
-        if (char.description.length > 229){
-            let limitOfSymbols = char.description.slice(0, 229);
+        if (char.description.length > 220){
+            let limitOfSymbols = char.description.slice(0, 220);
             char.description = limitOfSymbols.slice(0, limitOfSymbols.lastIndexOf(' ')) + "..."
         } 
+
         return {
             name: char.name,
             description: char.description,
             thumbnail: char.thumbnail.path + '.' +  char.thumbnail.extension,
             homepage: char.urls[0].url,
-            wiki: char.urls[1].url
+            wiki: char.urls[1].url,
+            id: char.id,
+            comics: char.comics.items
         }
     }
 }

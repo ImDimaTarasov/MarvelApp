@@ -1,13 +1,11 @@
-import './comicsList.scss';
-import uw from '../../resources/img/UW.png';
-import xMen from '../../resources/img/x-men.png';
-
+import { Link } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
-
 import useMarvelService from '../../services/MarvelService';
+
+import './comicsList.scss';
 
 const ComicsList = () => {
 
@@ -39,42 +37,20 @@ const ComicsList = () => {
         setComicsList(comicsList => [...comicsList, ...newComicsList]);
         setNewComicsLoading(newComicsLoading => false);
         setOffset(offset => offset + 8);
-        setComicsEnded(ended => ended);
+        setComicsEnded(ended);
     }
-    const itemRefs = useRef([]);
 
-    const focusOnItem = (id) => {
-        itemRefs.current.forEach(item => item.classList.remove('comics__item_selected'));
-        itemRefs.current[id].classList.add('comics__item_selected');
-        itemRefs.current[id].focus();
-    }
-    
     function renderItems(arr) {
         const items = arr.map((item, i) => {
-            let imgStyle = {'objectFit' : 'cover'};
-            if (item.img === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
-                imgStyle = {'objectFit' : 'unset'};
-            }
 
             return (
                 <li className="comics__item"
-                    key = {i}
-                    tabIndex={0}
-                    ref={el => itemRefs.current[i] = el}
-                    onClick={(e) => {
-                        focusOnItem(i);
-                        e.preventDefault();
-                    }}
-                    onKeyPress={(e) => {
-                        if (e.key === ' ' || e.key === "Enter") {
-                            focusOnItem(i);
-                        }
-                    }}>
-                    <a href="/#">
+                    key = {i}>
+                    <Link to={`/comics/${item.id}`}>
                         <img src={item.img} alt={item.title} className="comics__item-img"/>
                         <div className="comics__item-name">{item.title}</div>
                         <div className="comics__item-price">{item.price}$</div>
-                    </a>
+                    </Link>
                 </li>
             )
         })

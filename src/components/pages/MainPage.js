@@ -3,9 +3,11 @@ import RandomChar from "../randomChar/RandomChar";
 import CharList from "../charList/CharList";
 import CharInfo from "../charInfo/CharInfo";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
+import FindChar from "../findChar/FindChar";
 
 import decoration from '../../resources/img/vision.png';
 
+import './mainPages.scss';
 
 const MainPage = () => {
     
@@ -14,18 +16,27 @@ const MainPage = () => {
     const onCharSelected = (id) => {
        setSelectedChar(id);
     }
+    
     return( 
        <>
          <ErrorBoundary>
             <RandomChar/>
         </ErrorBoundary>
+
+       
+        
         <div className="char__content">
             <ErrorBoundary>
-                <CharList onCharSelected={onCharSelected}/>
+                <CharList onCharSelected={onCharSelected} selectedChar={selectedChar}/>
             </ErrorBoundary>
-            <ErrorBoundary>
-                <CharInfo charId={selectedChar}/>
-            </ErrorBoundary>
+           <div className="wrapper__char-info">
+                <ErrorBoundary>
+                    <CharInfo charId={selectedChar} onCharSelected={onCharSelected}/>
+                </ErrorBoundary>
+                <ErrorBoundary>
+                    <FindChar/>
+                </ErrorBoundary>
+           </div>
         </div>
         <img className="bg-decoration" src={decoration} alt="vision"/>
        </>

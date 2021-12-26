@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types'
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import useMarvelService from '../../services/MarvelService';
 
@@ -8,15 +9,15 @@ import ErrorMessage from '../errorMessage/ErrorMessage';
 
 import './charList.scss';
 
-const CharList = (props) =>{
+const CharList = (props) => {
     const [charList, setCharList] = useState([]);
     const [newItemLoading, setNewItemLoading] = useState(false);
     const [offset, setOffset] = useState(210);
     const [charEnded, setCharEnded] = useState(false);
-    
+
     
     const {loading, error, getAllCharacters} = useMarvelService();
-
+    
     useEffect(()=> {
         onRequest(offset, true);
     },[])
@@ -34,50 +35,68 @@ const CharList = (props) =>{
         }
 
         setCharList(charList => [...charList, ...newCharList]);
+        
         setNewItemLoading(newItemLoading => false);
         setOffset(offset => offset + 9 );
         setCharEnded(ended);
     }
-
+   
     const itemRefs = useRef([]);
-
+    
     
     const focusOnItem = (id) => {
         itemRefs.current.forEach(item => item.classList.remove('char__item_selected'));
         itemRefs.current[id].classList.add('char__item_selected');
         itemRefs.current[id].focus();
     }
+    const unfocusItem = () => {
+        if (props.selectedChar == null) {
+            itemRefs.current.forEach(item => item.classList.remove('char__item_selected'));
+        }
+    }
+    useEffect(() => {
+        unfocusItem()
+    },[props.selectedChar]);
 
     function renderItems(arr) {
+        const duration = 500;
         const items = arr.map((item, i) => {
             let imgStyle = {'objectFit' : 'cover'};
             if (item.thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
                 imgStyle = {'objectFit' : 'unset'};
             }
-
+           
             return (
-                <li className="char__item"
+               <CSSTransition
+               key ={item.id}
+               timeout={duration} 
+               classNames="char__item">
+                    <li className="char__item"
                     tabIndex={0}
                     ref={el => itemRefs.current[i] = el}
                     key={item.id}
                     onClick={() => {
                         props.onCharSelected(item.id);
-                        focusOnItem(i);
+                        focusOnItem(i);   
                     }}
                     onKeyPress={(e) => {
                         if (e.key === ' ' || e.key === "Enter") {
                             props.onCharSelected(item.id);
-                            focusOnItem(i);
+                            // focusOnItem(i);
                         }
                     }}>
-                        <img src={item.thumbnail} alt="abyss" style={imgStyle}/>
+                        <img src={item.thumbnail} alt={item.name} style={imgStyle}/>
                         <div className="char__name">{item.name}</div>
                 </li>
+               </CSSTransition>
             )
         })
+        
         return (
             <ul className="char__grid">
-                {items}
+                 <TransitionGroup component={null}>
+                    {items}
+                </TransitionGroup>
             </ul>
         )
     }

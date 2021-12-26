@@ -36,6 +36,21 @@
         &:hover {
             transform: translateY(-5px);
         }
+        &-enter {
+            opacity: 0;
+            transform: rotateY(-90deg);
+        }
+        &-enter-active {
+            opacity: 1;
+            transition: opacity 1000ms;
+        }
+        &-exit {
+            opacity: 1;
+        }
+        &-exit-active {
+            opacity: 0;
+            transition: opacity 1000ms;  
+        }
     }
     &__name {
         font-weight: bold;
@@ -45,5 +60,4 @@
         color: #fff;
         text-align: center;
     }
-    
 }

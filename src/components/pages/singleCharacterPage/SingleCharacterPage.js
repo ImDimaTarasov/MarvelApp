@@ -1,54 +1,64 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 
+import AppBanner from '../../appBanner/AppBanner';
 import useMarvelService from '../../../services/MarvelService';
-import ErrorMessage from '../../errorMessage/ErrorMessage';
-import Spinner from '../../spinner/Spinner';
+import setContent from '../../../utils/setContent';
+
 
 import './singleCharacterPage.scss'
 const SingleCharacterPage = () => {
     const {characterId} = useParams();
     const [character, setCharacter] = useState(null);
-    const {loading, error, getCharacter, clearError} = useMarvelService();
+    const {getCharacter, clearError, process, setProcess} = useMarvelService();
 
     useEffect(() => {
         updateComic()
+        // eslint-disable-next-line
     }, [characterId])
 
     const updateComic = () => {
         clearError();
         getCharacter(characterId)
             .then(onCharLoaded)
+            .then(() => setProcess('confirmed'))
     }
 
     const onCharLoaded = (char) => {
         setCharacter(char);
     }
 
-    const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading ? <Spinner/> : null;
-    const content = !(loading || error || !character) ? <View char={character}/> : null;
+    
     return(
         <>
-            {errorMessage}
-            {spinner}
-            {content}
+            {setContent(process, View, character)}
         </>
     )
    
 }
-const View = ({char}) =>{
-    const{ name, description, thumbnail} = char;
+const View = ({data}) =>{
+    const{ name, description, thumbnail} = data;
 
     return (
-        <div className="single-character">
-            <img src={thumbnail} alt={name} className="single-character__img"/>
-            <div className="single-character__info">
-                <h2 className="single-character__name">{name}</h2>
-                <p className="single-character__descr">{description}</p>
+        <>
+            <AppBanner/>
+            <div className="single-character">
+                <Helmet>
+                    <title>{name}</title>
+                    <meta
+                        name="description"
+                        content={`page about ${name}`}
+                    />
+                </Helmet>
+                <img src={thumbnail} alt={name} className="single-character__img"/>
+                <div className="single-character__info">
+                    <h2 className="single-character__name">{name}</h2>
+                    <p className="single-character__descr">{description}</p>
+                </div>
+                <Link to="/" className="single-character__back">Back to all</Link>
             </div>
-            <Link to="/" className="single-character__back">Back to all</Link>
-        </div>
+        </>
     )
 }
 

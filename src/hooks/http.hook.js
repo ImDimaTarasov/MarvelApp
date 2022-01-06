@@ -26,7 +26,7 @@ export const useHttp = () => {
     }, []);
 
     const clearError = useCallback(() => {
-        setProcess('waiting');
+        setProcess('loading');
     }, []);
 
     return { request, clearError, process, setProcess}

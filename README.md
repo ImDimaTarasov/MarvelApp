@@ -12,7 +12,8 @@ Methodology BEM
 Hooks\
 React-router\
 Formik\
-Yup
+Yup\
+Finite-state machine
 
 ## Components
 

@@ -26,7 +26,7 @@ In this component you can use function which can show you random character.
 In this component you can see list of characters starting from a certain number. 
 
 ### `Character information`
-In this component you can see list of characters.
+In this component you can see information about chosen character.
 
 ### `Character search`
 In this component you can find character by name.
